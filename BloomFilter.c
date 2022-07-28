@@ -1,88 +1,100 @@
 #include <stdio.h>
+enum
+{
+    N = 4,    // the number of strings
+    T = 8,    // the number of test words
+    M = 1000, // the size of the bloom filter
+    k = 3,    // the number of hash functions
+};
+int modularHash(const char string[], int R, int M);
+int checkString(const int bloomFilter[M], const char string[]);
+void addString(int bloomFilter[M], const char string[]);
 
-// Function headers
-int modularHash(char string[], int R, int M);
-int sh1(char string[]);
-int sh2(char string[]);
-int sh3(char string[]);
+int bloomFilter[M] = {0}; // array of zeroes.
 
+// Each pair of i'th elements is a seed pair for a 'unique' hash function.
+int RprimeSeeds[k] = {1103, 761, 83};
+int MprimeSeeds[k] = {173, 587, 101};
+
+const char *sampleWords[N] = {"fizz", "buzz", "bonk", "zzzz"};
+const char *testWords[T] = {
+    "fizz",
+    "buzz",
+    "bonk",
+    "zzzz",
+    "yyyy", // not in the bloom filter
+    "yike", // not in the bloom filter
+    "zzyz", // not in the bloom filter
+    "wyzz", // not in the bloom filter
+};
 int main()
 {
-    enum
+
+    for (int i = 0; i < N; i++)
     {
-        N = 3,  // the number of strings
-        M = 10, // the size of the bloom filter
-        k = 3,  // the number of hash functions
-    };
-
-    char *strings[N] = {"abc", "777", "xyz"};
-
-    int bloom_filter[M] = {0}; // array of `n` 0s.
-
-    // array of pointers to hash functions.
-    int (*hashers[k])() = {sh1, sh2, sh3};
-
-    // Fill the bloom filter
-    for (int j = 0; j < N; j++)
-        for (int i = 0; i < k; i++)
-        {
-            {
-                // Compute the hash of string j using the k'th hash function
-                // Map the hash to a position in the bloom filter
-                // then add this position to the bloom filter.
-                int result = hashers[i](strings[j]);
-                int position = result % M;
-                bloom_filter[position] = 1;
-            }
-        }
-
-    // Print the bloom filter
+        addString(bloomFilter, sampleWords[i]);
+    }
     for (int i = 0; i < M; i++)
-        printf("%d ", bloom_filter[i]);
+    {
+        printf("%d", bloomFilter[i]);
+    }
+    for (int i = 0; i < T; i++)
+    {
+        printf("%d\n", checkString(bloomFilter, testWords[i]));
+    }
+}
 
+/* Add a string to the bloom filter.
+ * @param bloomFilter: the filter to modify
+ * @param string: the string to add to the bloom filter.
+ */
+void addString(int bloomFilter[M], const char string[])
+{
+    for (int i = 0; i < k; i++)
+    {
+        int hash = modularHash(string, RprimeSeeds[i], MprimeSeeds[i]);
+        int position = hash % M;
+        bloomFilter[position] = 1;
+    }
+}
 
-    // TODO implement a function for checking a string against the bloom filter.
+/*  Check if a string is not in the bloom filter.
+ *  Return 0 if the string is definitely not in the bloom filter
+ *  Return 1 if the string is *probably* in the bloom filter
+ */
+int checkString(const int bloomFilter[M], const char string[])
+{
+    for (int i = 0; i < k; i++)
+    {
+        int hash = modularHash(string, RprimeSeeds[i], MprimeSeeds[i]);
+        int position = hash % M;
+
+        if (bloomFilter[position] == 1)
+        {
+            return 1;
+        }
+    }
     return 0;
 }
 
-/*
- Compute the modular hash of a char array
-    @param string, array of characters to hash
-    @param R: a seed value, should be a prime
-    @param M: a seed value, should also be a prime
-*/
-int modularHash(char string[], int R, int M)
+/* Compute the modular hash of a char array.
+ * @param string, array of characters to hash
+ * @param R: a seed value, should be a prime
+ * @param M: a seed value, should also be a prime
+ */
+int modularHash(const char string[], int R, int M)
 {
-    int chars = 3; // the number of characters
+    int chars = 4; // the number of characters
     int hash = 0;
 
-    char s;
     int n;
+    char s;
 
-    for (int i = 0; i < chars - 1; i++)
+    for (int i = 0; i < chars; i++)
+    {
         s = string[i];
-    n = (int)s;
-    hash = (R * hash + n) % M;
+        n = (int)s;
+        hash = (R * hash + n) % M;
+    }
     return hash;
-}
-
-int sh1(char string[])
-{
-    int M = 3;
-    int R = 31;
-    return modularHash(string, M, R);
-}
-
-int sh2(char string[])
-{
-    int M = 47;
-    int R = 17;
-    return modularHash(string, M, R);
-}
-
-int sh3(char string[])
-{
-    int M = 97;
-    int R = 29;
-    return modularHash(string, M, R);
 }
