@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 enum
 {
     N = 4,    // the number of strings
@@ -9,8 +10,6 @@ enum
 int modularHash(const char string[], int R, int M);
 int checkString(const int bloomFilter[M], const char string[]);
 void addString(int bloomFilter[M], const char string[]);
-
-int bloomFilter[M] = {0}; // array of zeroes.
 
 // Each pair of i'th elements is a seed pair for a 'unique' hash function.
 int RprimeSeeds[k] = {1103, 761, 83};
@@ -27,13 +26,17 @@ const char *testWords[T] = {
     "zzyz", // not in the bloom filter
     "wyzz", // not in the bloom filter
 };
+
 int main()
 {
+
+    int bloomFilter[M] = {0}; // array of zeroes.
 
     for (int i = 0; i < N; i++)
     {
         addString(bloomFilter, sampleWords[i]);
     }
+
     for (int i = 0; i < M; i++)
     {
         printf("%d", bloomFilter[i]);
@@ -59,8 +62,8 @@ void addString(int bloomFilter[M], const char string[])
 }
 
 /*  Check if a string is not in the bloom filter.
- *  Return 0 if the string is definitely not in the bloom filter
- *  Return 1 if the string is *probably* in the bloom filter
+ *  Return false if the string is definitely not in the bloom filter
+ *  Return true if the string is *probably* in the bloom filter
  */
 int checkString(const int bloomFilter[M], const char string[])
 {
@@ -71,10 +74,10 @@ int checkString(const int bloomFilter[M], const char string[])
 
         if (bloomFilter[position] == 1)
         {
-            return 1;
+            return true;
         }
     }
-    return 0;
+    return false;
 }
 
 /* Compute the modular hash of a char array.
@@ -87,13 +90,10 @@ int modularHash(const char string[], int R, int M)
     int chars = 4; // the number of characters
     int hash = 0;
 
-    int n;
-    char s;
-
     for (int i = 0; i < chars; i++)
     {
-        s = string[i];
-        n = (int)s;
+        char s = string[i];
+        int n = (int)s;
         hash = (R * hash + n) % M;
     }
     return hash;
