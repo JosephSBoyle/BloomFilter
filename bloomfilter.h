@@ -5,5 +5,5 @@
 #define M 1000 // the size of the bloom filter
 #define k 3    // the number of hash functions
 
-bool check_string(const int bloomFilter[M], const char string[]);
-void add_string(int bloomFilter[M], const char string[]);
+bool check_string(const bool bloomFilter[M], const char string[]);
+void add_string(bool bloomFilter[M], const char string[]);
