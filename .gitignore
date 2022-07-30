@@ -1,5 +1,6 @@
 # Manual additions
 .vscode
+main
 
 # Prerequisites
 *.d
