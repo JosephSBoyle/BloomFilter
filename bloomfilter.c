@@ -4,6 +4,22 @@
 int prime_seeds_1[k] = {1103, 761, 83};
 int prime_seeds_2[k] = {173, 587, 97};
 
+/* Compute the modular hash of a char array.
+ * @param a string (char array) to hash
+ * @param R: a seed value, should be a prime
+ * @param M: a seed value, should also be a prime
+ */
+static int modular_hash(const char string[], int seed_1, int seed_2)
+{
+    int hash = 0;
+    for (char character = *string; character != '\0'; character = *++string)
+    {
+        int n = (int)character;
+        hash = (seed_1 * hash + n) % seed_2;
+    }
+    return hash;
+}
+
 /* Add a string to the bloom filter.
  * @param bloomFilter: the filter to modify
  * @param string: the string to add to the bloom filter.
@@ -35,20 +51,4 @@ bool check_string(const int bloom_filter[M], const char string[])
         }
     }
     return false;
-}
-
-/* Compute the modular hash of a char array.
- * @param a string (char array) to hash
- * @param R: a seed value, should be a prime
- * @param M: a seed value, should also be a prime
- */
-int modular_hash(const char string[], int seed_1, int seed_2)
-{
-    int hash = 0;
-    for (char character = *string; character != '\0'; character = *++string)
-    {
-        int n = (int)character;
-        hash = (seed_1 * hash + n) % seed_2;
-    }
-    return hash;
 }

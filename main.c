@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
                "    arg: [*filter_string]: a sequence of strings to add to the bloom filter.\n"
                "    arg: test_word: a word to check for in the filter\n\n"
                "Usage\n"
-               "$ ./main [*filter_string] test_string\n"
-               "$ ./main filter_string_1 filter_string_2 ... filter_string_n test_word\n\n");
+               "    $ ./main [*filter_string] test_string\n"
+               "    $ ./main filter_string_1 filter_string_2 ... filter_string_n test_word\n");
         return 1;
     }
     int bloom_filter[M] = {0};
