@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
                "    $ ./main filter_string_1 filter_string_2 ... filter_string_n test_word\n");
         return 1;
     }
-    Bitarray bloom_filter = init_zeroed_bitarray();
+    Bitarray bloom_filter = {0};
 
     for (int i = 1; i < argc - 1; i++)
     {

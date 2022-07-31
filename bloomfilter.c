@@ -32,7 +32,7 @@ void add_string(Bitarray* bloom_filter, const char string[])
     {
         size_t hash = modular_hash(string, prime_seeds_1[i], prime_seeds_2[i]);
         size_t position = hash % BITARRAY_SIZE;
-        write_bit(bloom_filter, position, 1);
+        set_bit(bloom_filter, position);
     }
 }
 
