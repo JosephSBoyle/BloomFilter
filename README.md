@@ -1,6 +1,6 @@
 # Bloomfilter
 
-This project is a simple `C` implementation of a [bloom filter](https://en.wikipedia.org/wiki/Bloom_filter): a probabilistic data structure used to test membership in a set. A basic CLI interface is provided to test the implementation.
+This project is a simple `C` implementation of a [bloom filter](https://en.wikipedia.org/wiki/Bloom_filter): a probabilistic data structure used to test membership in a set. A basic command line interface is provided to test the implementation.
 
 ## Quickstart
 To run the project, build and run the executeable:
