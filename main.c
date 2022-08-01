@@ -1,5 +1,7 @@
-#include <stdio.h>
 #include "bloomfilter.h"
+#include "bitarray.h"
+#include <stdio.h>
+#include <stdbool.h>
 
 /* Create a bloom filter from the first `n` arguments and
  * then check if the last argument is filtered by the bloom filter and print the result.
@@ -17,15 +19,15 @@ int main(int argc, char *argv[])
                "    $ ./main filter_string_1 filter_string_2 ... filter_string_n test_word\n");
         return 1;
     }
-    int bloom_filter[M] = {0};
+    Bitarray bloom_filter = {0};
 
     for (int i = 1; i < argc - 1; i++)
     {
-        add_string(bloom_filter, argv[i]);
+        add_string(&bloom_filter, argv[i]);
     }
 
     char *last_string = argv[argc - 1];
-    bool match = check_string(bloom_filter, last_string);
+    bool match = check_string(&bloom_filter, last_string);
     printf("Is the last string: '%s' in the set of first strings?\n", last_string);
-    (match == true) ? printf("probably\n") : printf("definitely not\n");
+    printf(match ? "probably\n" : "definitely not\n");
 }
