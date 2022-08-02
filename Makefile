@@ -1,5 +1,22 @@
 CC=gcc
-CFLAGS=-I.
+CFLAGS=-O3
 
-bloomfilter: main.o bloomfilter.o bitarray.o
-	$(CC) -o main main.o bloomfilter.o bitarray.o
+src_dir := src
+build_dir := build
+target := main
+
+code := $(wildcard $(src_dir)/*.c)
+objects := $(patsubst $(src_dir)/%.c, $(build_dir)/%.o, $(code))
+
+$(target): $(objects)
+	$(CC) $(CFLAGS) $^ -o $@
+
+$(build_dir)/%.o: $(src_dir)/%.c $(build_dir)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(build_dir):
+	mkdir -p $(build_dir)
+
+clean:
+	rm -r $(build_dir)
+	rm $(target)
